@@ -10,7 +10,7 @@ import net.minecraftforge.network.NetworkConstants;
 
 @Mod(Vanishmod.MODID)
 public class Vanishmod {
-	public static final String MODID = "vmod"; //This is Vanishmod v1.1.16 for 1.20.1!
+	public static final String MODID = "vmod"; //This is Vanishmod v1.1.17 for 1.20.1!
 	public static boolean mc2discordDetected = false;
 
 	public Vanishmod() {

@@ -37,7 +37,7 @@ public class VanishEventListener {
 	public static void onPlayerJoin(PlayerLoggedInEvent event) {
 		if (event.getEntity() instanceof ServerPlayer player && VanishUtil.isVanished(player)) {
 			player.sendSystemMessage(VanishUtil.VANISHMOD_PREFIX.copy().append("Note: You are currently vanished"));
-			VanishUtil.updateVanishedPlayerList(player, true);
+			VanishingHandler.updateVanishedPlayerList(player, true);
 		}
 
 		if (event.getEntity().equals(FieldHolder.joiningPlayer))

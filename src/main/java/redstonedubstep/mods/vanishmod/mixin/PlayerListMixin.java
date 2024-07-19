@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import redstonedubstep.mods.vanishmod.VanishConfig;
 import redstonedubstep.mods.vanishmod.VanishUtil;
+import redstonedubstep.mods.vanishmod.VanishingHandler;
 import redstonedubstep.mods.vanishmod.misc.FieldHolder;
 import redstonedubstep.mods.vanishmod.misc.SoundSuppressionHelper;
 
@@ -25,8 +26,8 @@ public class PlayerListMixin {
 	//Vanishes any unvanished players that are on the vanishing queue. Also acts as a helper for accessing the player that is currently joining the server
 	@Inject(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
 	public void vanishmod$onSendJoinMessage(Connection networkManager, ServerPlayer player, CallbackInfo ci) {
-		if (VanishUtil.removeFromQueue(player.getGameProfile().getName()) && !VanishUtil.isVanished(player))
-			VanishUtil.toggleVanish(player);
+		if (VanishingHandler.removeFromQueue(player.getGameProfile().getName()) && !VanishUtil.isVanished(player))
+			VanishingHandler.toggleVanish(player);
 
 		FieldHolder.joiningPlayer = player;
 	}

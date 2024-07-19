@@ -30,9 +30,6 @@ public abstract class ServerPlayerMixin extends Player {
 	@Final
 	public MinecraftServer server;
 
-	@Shadow
-	public abstract void sendSystemMessage(Component component);
-
 	//player entity needs a constructor, so here we go
 	public ServerPlayerMixin(Level world, BlockPos pos, float angle, GameProfile gameProfile) {
 		super(world, pos, angle, gameProfile);
@@ -48,11 +45,12 @@ public abstract class ServerPlayerMixin extends Player {
 			ResourceKey<ChatType> chatTypeKey = VanishUtil.getChatTypeRegistryKey(chatType, this);
 
 			if (VanishUtil.isVanished(sender, this)) {
-				if (VanishConfig.CONFIG.hidePlayerNameInChat.get())
-					chatType = ChatType.bind(chatTypeKey, level().registryAccess(), Component.literal("vanished").withStyle(ChatFormatting.GRAY));
+				if (!VanishConfig.CONFIG.hideChatMessages.get() || (chatTypeKey != ChatType.CHAT && chatTypeKey != ChatType.TEAM_MSG_COMMAND_INCOMING)) {
+					if (VanishConfig.CONFIG.hidePlayerNameInChat.get())
+						chatType = ChatType.bind(chatTypeKey, level().registryAccess(), Component.literal("vanished").withStyle(ChatFormatting.GRAY));
 
-				if (chatTypeKey != ChatType.CHAT && chatTypeKey != ChatType.TEAM_MSG_COMMAND_INCOMING)
 					sendSystemMessage(chatType.decorate(playerChatMessage.content()));
+				}
 
 				callback.cancel();
 			}

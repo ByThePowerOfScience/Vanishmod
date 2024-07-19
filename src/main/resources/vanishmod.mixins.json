@@ -16,7 +16,9 @@
 		"gui.ServerStatusPacketListenerImplMixin",
 		"sound.EntityMixin",
 		"world.ChunkMapTrackedEntityMixin",
+		"world.EntityGetterMixin",
 		"world.LivingEntityMixin",
+		"world.PlayerDetectorMixin",
 		"world.PlayerMixin",
 		"world.SleepStatusMixin"
 	],

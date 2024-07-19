@@ -16,13 +16,12 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 import redstonedubstep.mods.vanishmod.api.PlayerVanishEvent;
 import redstonedubstep.mods.vanishmod.compat.Mc2DiscordCompat;
 import redstonedubstep.mods.vanishmod.misc.SoundSuppressionHelper;
 
 public class VanishingHandler {
-	private static final Set<ServerPlayer> vanishedPlayers = new HashSet<>();
 	private static final Set<String> vanishingQueue = new HashSet<>();
 
 	public static void toggleVanish(ServerPlayer player) {
@@ -45,8 +44,8 @@ public class VanishingHandler {
 
 		for (ServerPlayer otherPlayer : list) {
 			boolean otherPlayerVanished = VanishUtil.isVanished(otherPlayer);
-			boolean otherAllowedToSeeChanging = VanishUtil.allowedToSeePlayer(otherPlayer, changingPlayer, otherPlayerVanished, vanishes);
-			boolean changingAllowedToSeeOther = VanishUtil.allowedToSeePlayer(changingPlayer, otherPlayer, vanishes, otherPlayerVanished);
+			boolean otherAllowedToSeeChanging = VanishUtil.playerAllowedToSeeOther(otherPlayer, changingPlayer, otherPlayerVanished, vanishes);
+			boolean changingAllowedToSeeOther = VanishUtil.playerAllowedToSeeOther(changingPlayer, otherPlayer, vanishes, otherPlayerVanished);
 
 			if (!otherPlayer.equals(changingPlayer)) { //prevent packets from being sent to the executor of the command
 				//If the other player can or cannot see the changing player now, add or remove the changing player to/from the other player's client side info list
@@ -100,14 +99,14 @@ public class VanishingHandler {
 			Mc2DiscordCompat.hidePlayer(player, vanished);
 
 		updateVanishedPlayerList(player, vanished);
-		NeoForge.EVENT_BUS.post(new PlayerVanishEvent(player, vanished));
+		MinecraftForge.EVENT_BUS.post(new PlayerVanishEvent(player, vanished));
 	}
 
 	public static void updateVanishedPlayerList(ServerPlayer player, boolean vanished) {
 		if (vanished)
-			vanishedPlayers.add(player);
+			VanishUtil.VANISHED_PLAYERS.add(player.getUUID());
 		else
-			vanishedPlayers.remove(player);
+			VanishUtil.VANISHED_PLAYERS.remove(player.getUUID());
 
 		SoundSuppressionHelper.updateVanishedPlayerMap(player, vanished);
 	}

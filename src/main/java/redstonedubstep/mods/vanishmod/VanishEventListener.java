@@ -17,6 +17,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.TabListNameFormat;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -35,11 +36,14 @@ public class VanishEventListener {
 	}
 
 	@SubscribeEvent
+	public static void onServerStopped(ServerStoppedEvent event) {
+		VanishUtil.VANISHED_PLAYERS.clear();
+	}
+
+	@SubscribeEvent
 	public static void onPlayerJoin(PlayerLoggedInEvent event) {
-		if (event.getEntity() instanceof ServerPlayer player && VanishUtil.isVanished(player)) {
+		if (event.getEntity() instanceof ServerPlayer player && VanishUtil.isVanished(player))
 			player.sendSystemMessage(VanishUtil.VANISHMOD_PREFIX.copy().append("Note: You are currently vanished"));
-			VanishingHandler.updateVanishedPlayerList(player, true);
-		}
 
 		if (event.getEntity().equals(FieldHolder.joiningPlayer))
 			FieldHolder.joiningPlayer = null; //Reset the joiningPlayer field due to it being obsolete at the time the event is fired

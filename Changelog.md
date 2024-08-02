@@ -1,3 +1,7 @@
+-----------Changelog for v1.1.17.1-----------
+
+- Fixed a crash that could occur with projectiles
+
 -----------Changelog for v1.1.17-----------
 
 - Added the "/v help" subcommand as an ingame explanation of all subcommands in this mod

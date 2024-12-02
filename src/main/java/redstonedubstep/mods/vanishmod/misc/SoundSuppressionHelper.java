@@ -7,6 +7,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,8 +30,8 @@ import redstonedubstep.mods.vanishmod.VanishConfig;
 import redstonedubstep.mods.vanishmod.VanishUtil;
 
 public class SoundSuppressionHelper {
-	private static final Map<ServerPlayer, Pair<BlockPos, Entity>> vanishedPlayersAndHitResults = new HashMap<>();
-	private static Pair<Packet<?>, Player> packetOrigin = null;
+	private static final Map<ServerPlayer, Pair<BlockPos, Entity>> vanishedPlayersAndHitResults = new WeakHashMap<>();
+	private static Pair<Packet<?>, WeakReference<Player>> packetOrigin = null;
 
 	public static boolean shouldCapturePlayers() {
 		return VanishConfig.CONFIG.indirectSoundSuppression.get() || VanishConfig.CONFIG.indirectParticleSuppression.get();
@@ -61,11 +64,11 @@ public class SoundSuppressionHelper {
 	}
 
 	public static void putSoundPacket(Packet<?> packet, Player player) {
-		packetOrigin = Pair.of(packet, player);
+		packetOrigin = Pair.of(packet, new WeakReference<Player>(player));
 	}
 
 	public static Player getPlayerForPacket(Packet<?> packet) {
-		return packetOrigin != null && packetOrigin.getLeft().equals(packet) ? packetOrigin.getRight() : null;
+		return packetOrigin != null && packetOrigin.getLeft().equals(packet) ? packetOrigin.getRight().get() : null;
 	}
 
 	public static Player getIndirectVanishedSoundCause(Player player, Level level, double x, double y, double z, Player forPlayer) {
